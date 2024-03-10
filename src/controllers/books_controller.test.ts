@@ -134,6 +134,33 @@ describe("POST /api/v1/books endpoint", () => {
 	});
 });
 
+describe("PUT /api/v1/books/{bookId} endpoint", () => {
+	test("status code successfully 201 for updating using a valid bookId", async () => {
+		// Act
+		const res = await request(app)
+			.put("/api/v1/books/1")
+			.send({ bookId: 1, title: "Fantastic Mr. Fox", author: "Roald Dahl" });
+
+		// Assert
+		expect(res.statusCode).toEqual(204);
+	});
+
+	test("status code 400 when updating using an invalid Id", async () => {
+		// Arrange - we can enforce throwing an exception by mocking the implementation
+		jest.spyOn(bookService, "updateBook").mockImplementation(() => {
+			throw new Error("Error updating book");
+		});
+
+		// Act
+		const res = await request(app)
+			.put("/api/v1/books/5")
+			.send({ title: "Fantastic Mr. Fox", author: "Roald Dahl" }); // Invalid bookId
+
+		// Assert
+		expect(res.statusCode).toEqual(400);
+	});
+});
+
 describe("DELETE /api/v1/books/{bookId} endpoint", () => {
 	test("status code 204 for a successful delete using a valid bookId", async () => {
 		// Act

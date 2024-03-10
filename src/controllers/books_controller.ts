@@ -31,9 +31,12 @@ export const saveBook = async (req: Request, res: Response) => {
 export const updateBook = async (req: Request, res: Response) => {
 	const bookUpdateData = req.body;
 	const bookId = Number.parseInt(req.params.bookId);
-
-	const book = await bookService.updateBook(bookId, bookUpdateData);
-	res.status(204).json(book);
+	try {
+		const book = await bookService.updateBook(bookId, bookUpdateData);
+		res.status(204).json(book);
+	} catch (error) {
+		res.status(400).json({ message: (error as Error).message });
+	}
 };
 
 // User Story 5 - delete Book By Id Solution
@@ -45,11 +48,8 @@ export const deleteBook = async (req: Request, res: Response) => {
 	} else {
 		try {
 			const result = await bookService.deleteBook(bookId);
-			console.log(req.body);
 			res.status(204).json(result);
 		} catch (error) {
-			console.log("error");
-			console.log(`${(error as Error).message}`);
 			res.status(400).json({ message: (error as Error).message });
 		}
 	}
@@ -57,7 +57,6 @@ export const deleteBook = async (req: Request, res: Response) => {
 	// await bookService
 	// 	.deleteBook(bookId)
 	// 	.then((book) => {
-	// 		console.log("deleted");
 	// 		res.status(204).json(book);
 	// 	})
 	// 	.catch((error) =>
