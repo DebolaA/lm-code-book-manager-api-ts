@@ -35,3 +35,32 @@ export const updateBook = async (req: Request, res: Response) => {
 	const book = await bookService.updateBook(bookId, bookUpdateData);
 	res.status(204).json(book);
 };
+
+// User Story 5 - delete Book By Id Solution
+export const deleteBook = async (req: Request, res: Response) => {
+	const bookId = Number.parseInt(req.params.bookId);
+
+	if (Number.isNaN(bookId) || !bookId) {
+		res.status(400).json({ message: "Invalid book Id" });
+	} else {
+		try {
+			const result = await bookService.deleteBook(bookId);
+			console.log(req.body);
+			res.status(204).json(result);
+		} catch (error) {
+			console.log("error");
+			console.log(`${(error as Error).message}`);
+			res.status(400).json({ message: (error as Error).message });
+		}
+	}
+
+	// await bookService
+	// 	.deleteBook(bookId)
+	// 	.then((book) => {
+	// 		console.log("deleted");
+	// 		res.status(204).json(book);
+	// 	})
+	// 	.catch((error) =>
+	// 		res.status(400).json({ message: (error as Error).message })
+	// 	);
+};
