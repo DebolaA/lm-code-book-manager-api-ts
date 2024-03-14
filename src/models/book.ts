@@ -5,7 +5,7 @@ import {
 	CreationOptional,
 	DataTypes,
 } from "sequelize";
-import { sequelize } from "../database/database";
+import { sequelizeConnection } from "../database/database";
 
 export class Book extends Model<
 	InferAttributes<Book>,
@@ -39,7 +39,18 @@ Book.init(
 	},
 	{
 		modelName: "Book",
+		tableName: "Books",
 		timestamps: false,
-		sequelize: sequelize,
+		sequelize: sequelizeConnection,
 	}
 );
+
+export const testDatabaseConnection = async () => {
+	try {
+		console.log("Gonna authenticate"); // <== to make sure console.log is working and not overrided!
+		await sequelizeConnection.authenticate();
+		console.log("Connection has been established successfully.");
+	} catch (error) {
+		console.error("Unable to connect to the database:", error);
+	}
+};
